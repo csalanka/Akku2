@@ -39,23 +39,26 @@
             margin-bottom: 10px;
         }
 
-        /* Tab stílusok */
         .tab-buttons {
             background: #f8f9fa;
             padding: 0;
             border-bottom: 1px solid #ddd;
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .tab-button {
             background: #f8f9fa;
             border: none;
-            padding: 15px 25px;
+            padding: 12px 20px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
+            flex-grow: 1;
+            text-align: center;
         }
 
         .tab-button:hover {
@@ -108,6 +111,15 @@
         .btn-warning {
             background: #ffc107;
             color: #333;
+        }
+
+        .btn-fullscreen {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-fullscreen:hover {
+            background: #5a6268;
         }
 
         .btn:hover {
@@ -250,6 +262,12 @@
                 font-size: 11px;
             }
 
+            .btn-fullscreen {
+                width: 100%;
+                padding: 8px;
+                font-size: 12px;
+            }
+
             td:last-child {
                 flex-direction: column;
                 align-items: flex-start;
@@ -265,17 +283,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔋 Akkumulátor Menedzser v2.5.1</h1>
-            <p>Eszközök és akkumulátorok nyilvántartása - MODAL FIX</p>
+            <h1>🔋 Akkumulátor Menedzser v2.5.0</h1>
+            <p>Eszközök és akkumulátorok nyilvántartása - MOBILBARÁT</p>
         </div>
 
-        <!-- Tab gombok -->
         <div class="tab-buttons">
             <button class="tab-button active" onclick="showTab('devices')" id="devicesTab">📱 Eszközök</button>
             <button class="tab-button" onclick="showTab('batteries')" id="batteriesTab">🔋 Akkumulátorok</button>
         </div>
 
-        <!-- ESZKÖZÖK TAB -->
         <div id="devicesContent" class="tab-content active">
             <div class="controls">
                 <input type="file" id="csvFileInput" accept=".csv" style="margin-right: 10px;" />
@@ -283,6 +299,7 @@
                 <button class="btn btn-success" onclick="addDevice()">➕ Új Eszköz</button>
                 <button class="btn btn-warning" onclick="exportCSV()">💾 CSV Export</button>
                 <button class="btn btn-warning" onclick="showCSVText()">👁 CSV Szöveg</button>
+                <button class="btn btn-fullscreen" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Teljes képernyő</button>
                 
                 <select id="typeFilter" class="form-control" style="width: auto; margin-left: 10px;" onchange="renderTable()">
                     <option value="">🔋 Minden típus</option>
@@ -327,13 +344,11 @@
                         </tr>
                     </thead>
                     <tbody id="deviceTableBody">
-                        <!-- Eszköz adatok -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- AKKUMULÁTOROK TAB -->
         <div id="batteriesContent" class="tab-content">
             <div class="controls">
                 <input type="file" id="batteryCSVInput" accept=".csv" style="margin-right: 10px;" />
@@ -341,6 +356,7 @@
                 <button class="btn btn-success" onclick="addBattery()">➕ Új Akku</button>
                 <button class="btn btn-warning" onclick="exportBatteryCSV()">💾 Akku Export</button>
                 <button class="btn btn-warning" onclick="showBatteryCSVText()">👁 Akku Szöveg</button>
+                <button class="btn btn-fullscreen" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Teljes képernyő</button>
                 
                 <select id="batteryTypeFilter" class="form-control" style="width: auto; margin-left: 10px;" onchange="renderBatteryTable()">
                     <option value="">🔋 Minden típus</option>
@@ -378,14 +394,12 @@
                         </tr>
                     </thead>
                     <tbody id="batteryTableBody">
-                        <!-- Akku adatok -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Eszköz modal -->
     <div id="deviceModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -461,7 +475,6 @@
         </div>
     </div>
 
-    <!-- Akku modal -->
     <div id="batteryModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeBatteryModal()">&times;</span>
@@ -507,7 +520,6 @@
     </div>
 
     <script>
-        // ESZKÖZ ADATOK
         let devices = [
             {
                 id: "ESZ001",
@@ -544,7 +556,6 @@
             }
         ];
 
-        // AKKUMULÁTOR ADATOK
         let batteries = [
             {
                 id: "AK001",
@@ -578,7 +589,6 @@
         let editingIndex = -1;
         let editingBatteryIndex = -1;
 
-        // Oldal betöltés
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Devices loaded:', devices);
             console.log('Batteries loaded:', batteries);
@@ -599,7 +609,6 @@
             });
         });
 
-        // TAB VÁLTÁS
         function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
@@ -612,7 +621,6 @@
             document.getElementById(tabName + 'Tab').classList.add('active');
         }
 
-        // ESZKÖZ TÁBLÁZAT
         function renderTable() {
             const tbody = document.getElementById('deviceTableBody');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -737,7 +745,6 @@
             document.getElementById('deviceModal').style.display = 'none';
         }
 
-        // AKKUMULÁTOR MINŐSÍTÉS
         function calculateQuality(resistance, capacity, usageCount, batteryType) {
             const references = {
                 "Li-ion_18V": { maxResistance: 50, minCapacity: 3000 },
@@ -769,7 +776,6 @@
             return "Cserélendő";
         }
 
-        // AKKUMULÁTOR TÁBLÁZAT
         function renderBatteryTable() {
             const tbody = document.getElementById('batteryTableBody');
             const searchTerm = document.getElementById('batterySearchInput').value.toLowerCase();
@@ -898,7 +904,6 @@
             document.getElementById('batteryModal').style.display = 'none';
         }
 
-        // CSV FUNKCIÓK - ESZKÖZÖK
         function exportCSV() {
             if (devices.length === 0) {
                 alert('Nincsenek eszközök!');
@@ -1041,7 +1046,6 @@
             alert(`✅ ${newDevices.length} eszköz sikeresen betöltve!`);
         }
 
-        // CSV FUNKCIÓK - AKKUMULÁTOROK
         function exportBatteryCSV() {
             if (batteries.length === 0) {
                 alert('Nincsenek akkumulátorok!');
@@ -1173,7 +1177,33 @@
             alert(`✅ ${newBatteries.length} akkumulátor sikeresen betöltve!`);
         }
 
-        // Modal bezárása háttérre kattintással
+        function toggleFullscreen() {
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    fullscreenBtn.innerHTML = '⛶ Normál nézet';
+                }).catch(err => {
+                    alert('Nem sikerült teljes képernyőre váltani: ' + err);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    fullscreenBtn.innerHTML = '⛶ Teljes képernyő';
+                }).catch(err => {
+                    alert('Nem sikerült kilépni a teljes képernyőről: ' + err);
+                });
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            if (!document.fullscreenElement) {
+                fullscreenBtn.innerHTML = '⛶ Teljes képernyő';
+            } else {
+                fullscreenBtn.innerHTML = '⛶ Normál nézet';
+            }
+        });
+
         window.onclick = function(event) {
             const deviceModal = document.getElementById('deviceModal');
             const batteryModal = document.getElementById('batteryModal');
