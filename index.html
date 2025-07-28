@@ -32,6 +32,7 @@
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative; /* Hogy a fullscreen gomb pozícionálható legyen */
         }
 
         .header h1 {
@@ -114,12 +115,26 @@
         }
 
         .btn-fullscreen {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             background: #6c757d;
             color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn-fullscreen:hover {
             background: #5a6268;
+            transform: scale(1.1);
         }
 
         .btn:hover {
@@ -191,6 +206,8 @@
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .form-group {
@@ -263,9 +280,11 @@
             }
 
             .btn-fullscreen {
-                width: 100%;
-                padding: 8px;
-                font-size: 12px;
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                top: 15px;
+                right: 15px;
             }
 
             td:last-child {
@@ -277,6 +296,13 @@
                 padding: 10px 15px;
                 font-size: 14px;
             }
+
+            .modal-content {
+                margin: 10% auto;
+                padding: 15px;
+                max-height: 70vh;
+                width: 95%;
+            }
         }
     </style>
 </head>
@@ -285,6 +311,7 @@
         <div class="header">
             <h1>🔋 Akkumulátor Menedzser v2.5.0</h1>
             <p>Eszközök és akkumulátorok nyilvántartása - MOBILBARÁT</p>
+            <button class="btn-fullscreen" onclick="toggleFullscreen()" id="fullscreenBtn" title="Teljes képernyő">⛶</button>
         </div>
 
         <div class="tab-buttons">
@@ -299,7 +326,6 @@
                 <button class="btn btn-success" onclick="addDevice()">➕ Új Eszköz</button>
                 <button class="btn btn-warning" onclick="exportCSV()">💾 CSV Export</button>
                 <button class="btn btn-warning" onclick="showCSVText()">👁 CSV Szöveg</button>
-                <button class="btn btn-fullscreen" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Teljes képernyő</button>
                 
                 <select id="typeFilter" class="form-control" style="width: auto; margin-left: 10px;" onchange="renderTable()">
                     <option value="">🔋 Minden típus</option>
@@ -356,7 +382,6 @@
                 <button class="btn btn-success" onclick="addBattery()">➕ Új Akku</button>
                 <button class="btn btn-warning" onclick="exportBatteryCSV()">💾 Akku Export</button>
                 <button class="btn btn-warning" onclick="showBatteryCSVText()">👁 Akku Szöveg</button>
-                <button class="btn btn-fullscreen" onclick="toggleFullscreen()" id="fullscreenBtn">⛶ Teljes képernyő</button>
                 
                 <select id="batteryTypeFilter" class="form-control" style="width: auto; margin-left: 10px;" onchange="renderBatteryTable()">
                     <option value="">🔋 Minden típus</option>
@@ -1182,13 +1207,15 @@
             
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().then(() => {
-                    fullscreenBtn.innerHTML = '⛶ Normál nézet';
+                    fullscreenBtn.innerHTML = '⛶';
+                    fullscreenBtn.title = 'Normál nézet';
                 }).catch(err => {
                     alert('Nem sikerült teljes képernyőre váltani: ' + err);
                 });
             } else {
                 document.exitFullscreen().then(() => {
-                    fullscreenBtn.innerHTML = '⛶ Teljes képernyő';
+                    fullscreenBtn.innerHTML = '⛶';
+                    fullscreenBtn.title = 'Teljes képernyő';
                 }).catch(err => {
                     alert('Nem sikerült kilépni a teljes képernyőről: ' + err);
                 });
@@ -1198,9 +1225,11 @@
         document.addEventListener('fullscreenchange', () => {
             const fullscreenBtn = document.getElementById('fullscreenBtn');
             if (!document.fullscreenElement) {
-                fullscreenBtn.innerHTML = '⛶ Teljes képernyő';
+                fullscreenBtn.innerHTML = '⛶';
+                fullscreenBtn.title = 'Teljes képernyő';
             } else {
-                fullscreenBtn.innerHTML = '⛶ Normál nézet';
+                fullscreenBtn.innerHTML = '⛶';
+                fullscreenBtn.title = 'Normál nézet';
             }
         });
 
