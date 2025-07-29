@@ -334,7 +334,6 @@
                     <option value="NiMH_AA">NiMH AA</option>
                     <option value="NiMH_AAA">NiMH AAA</option>
                     <option value="Li-ion_18650">Li-ion 18650</option>
-                    <option value="Nem_azonosított">Nem azonosított</option>
                 </select>
                 
                 <select id="chargerFilter" class="form-control" style="width: auto; margin-left: 5px;" onchange="renderTable()">
@@ -452,12 +451,11 @@
                         <option value="NiMH_AA">NiMH AA</option>
                         <option value="NiMH_AAA">NiMH AAA</option>
                         <option value="Li-ion_18650">Li-ion 18650</option>
-                        <option value="Nem_azonosított">Nem azonosított</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Darabszám:</label>
-                    <input type="number" id="batteryCount" class="form-control" min="0" required>
+                    <input type="number" id="batteryCount" class="form-control" min="1" value="1" required>
                 </div>
                 <div class="form-group">
                     <label>Töltő:</label>
@@ -979,7 +977,7 @@
                     device.name || '',
                     device.location || '',
                     device.batteryType || '',
-                    device.batteryCount || '',
+                    device.batteryCount || 1,
                     device.chargerType || '',
                     device.usageFrequency || '',
                     device.lastCharge || '',
@@ -1047,7 +1045,7 @@
                     name: row[1] || 'Névtelen eszköz',
                     location: row[2] || 'Ismeretlen',
                     batteryType: row[3] || 'Egyéb',
-                    batteryCount: parseInt(row[4]) || '',
+                    batteryCount: parseInt(row[4]) || 1,
                     chargerType: row[5] || 'Egyéb',
                     usageFrequency: row[6] || '',
                     lastCharge: row[7] || null,
