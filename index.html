@@ -704,7 +704,7 @@
             document.getElementById('modalTitle').textContent = 'Új Eszköz';
             document.getElementById('deviceForm').reset();
             
-            const maxId = Math.max(...devices.map(d => parseInt(d.id.replace('ESZ', ''))));
+            const maxId = Math.max(...devices.map(d => parseInt(d.id.replace('ESZ', ''))), 0); // Hozzáadva a 0-t, ha üres a devices tömb
             document.getElementById('deviceId').value = `ESZ${String(maxId + 1).padStart(3, '0')}`;
             
             document.getElementById('deviceModal').style.display = 'block';
@@ -867,7 +867,7 @@
             document.getElementById('batteryModalTitle').textContent = 'Új Akkumulátor';
             document.getElementById('batteryForm').reset();
             
-            const maxId = Math.max(...batteries.map(b => parseInt(b.id.replace('AK', ''))));
+            const maxId = Math.max(...batteries.map(b => parseInt(b.id.replace('AK', ''))), 0); // Hozzáadva a 0-t, ha üres a batteries tömb
             document.getElementById('batteryId').value = `AK${String(maxId + 1).padStart(3, '0')}`;
             
             document.getElementById('batteryModal').style.display = 'block';
@@ -946,7 +946,8 @@
                     device.name || '',
                     device.location || '',
                     device.batteryType || '',
-                    device.batteryCount || 1,
+                    // JAVÍTÁS: batteryCount alapértelmezett értéke 0, nem 1
+                    device.batteryCount !== undefined && device.batteryCount !== null ? device.batteryCount : 0,
                     device.chargerType || '',
                     device.usageFrequency || '',
                     device.lastCharge || '',
@@ -979,7 +980,8 @@
                     device.name || '',
                     device.location || '',
                     device.batteryType || '',
-                    device.batteryCount || 1,
+                    // JAVÍTÁS: batteryCount alapértelmezett értéke 0, nem 1
+                    device.batteryCount !== undefined && device.batteryCount !== null ? device.batteryCount : 0,
                     device.chargerType || '',
                     device.usageFrequency || '',
                     device.lastCharge || '',
@@ -1042,12 +1044,14 @@
                 const row = rows[i];
                 if (row.length === 0 || (row.length === 1 && row[0] === '')) continue;
 
+                const batteryCountValue = parseInt(row[4]);
                 const device = {
                     id: row[0] || `ESZ${String(i).padStart(3, '0')}`,
                     name: row[1] || 'Névtelen eszköz',
                     location: row[2] || 'Ismeretlen',
                     batteryType: row[3] || 'Egyéb',
-                    batteryCount: parseInt(row[4]) || 1,
+                    // JAVÍTÁS: batteryCount alapértelmezett értéke 0, ha a parseint NaN vagy falsy
+                    batteryCount: isNaN(batteryCountValue) ? 0 : batteryCountValue,
                     chargerType: row[5] || 'Egyéb',
                     usageFrequency: row[6] || '',
                     lastCharge: row[7] || null,
