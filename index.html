@@ -89,6 +89,32 @@
             align-items: center;
         }
 
+        /* ÚJ STÍLUS A RAJZHOZ */
+        .control-group {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .control-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-item > * {
+            flex-grow: 1;
+        }
+        
+        /* A szűrők és a gombok szélessége megkötve */
+        .filter-select, .action-button {
+            width: 100%;
+            flex-grow: 1;
+            min-width: 150px;
+        }
+
         .btn {
             padding: 6px 8px;
             border: none;
@@ -262,6 +288,10 @@
                 flex-direction: column;
                 gap: 8px;
             }
+            
+            .control-group {
+                flex-direction: column;
+            }
 
             .search-box, .form-control {
                 width: 100%;
@@ -319,38 +349,42 @@
 
         <div id="devicesContent" class="tab-content active">
             <div class="controls">
-                <input type="file" id="csvFileInput" accept=".csv" style="margin-right: 10px;" />
+                <input type="file" id="csvFileInput" accept=".csv" />
                 <button class="btn btn-primary" onclick="loadCSV()">📁 CSV Betöltés</button>
                 <button class="btn btn-success" onclick="addDevice()">➕ Új Eszköz</button>
                 <button class="btn btn-warning" onclick="exportCSV()">💾 CSV Export</button>
                 <button class="btn btn-warning" onclick="showCSVText()">👁 CSV Szöveg</button>
+
+                <div class="control-group">
+                    <select id="typeFilter" class="form-control filter-select" onchange="renderTable()">
+                        <option value="">🔋 Minden típus</option>
+                        <option value="Li-ion_18V">Li-ion 18V</option>
+                        <option value="Li-ion_12V">Li-ion 12V</option>
+                        <option value="NiMH_AA">NiMH AA</option>
+                        <option value="NiMH_AAA">NiMH AAA</option>
+                        <option value="Li-ion_18650">Li-ion 18650</option>
+                        <option value="Nem_azonosított">Nem azonosított</option>
+                    </select>
+                    
+                    <select id="chargerFilter" class="form-control filter-select" onchange="renderTable()">
+                        <option value="">🔌 Minden töltő</option>
+                        <option value="Gyari_tolto">Gyári töltő</option>
+                        <option value="Univerzalis_tolto">Univerzális töltő</option>
+                        <option value="Dokkolo_tolto">Dokkoló töltő</option>
+                        <option value="USB-C">USB-C</option>
+                        <option value="Micro-USB">Micro-USB</option>
+                        <option value="USB-A">USB-A</option>
+                        <option value="Lightning">Lightning</option>
+                        <option value="Wireless">Vezeték nélküli</option>
+                        <option value="12V_auto">12V autós</option>
+                        <option value="230V_halozati">230V hálózati</option>
+                    </select>
+                </div>
                 
-                <select id="typeFilter" class="form-control" style="width: auto; margin-left: 10px;" onchange="renderTable()">
-                    <option value="">🔋 Minden típus</option>
-                    <option value="Li-ion_18V">Li-ion 18V</option>
-                    <option value="Li-ion_12V">Li-ion 12V</option>
-                    <option value="NiMH_AA">NiMH AA</option>
-                    <option value="NiMH_AAA">NiMH AAA</option>
-                    <option value="Li-ion_18650">Li-ion 18650</option>
-                    <option value="Nem_azonosított">Nem azonosított</option>
-                </select>
-                
-                <select id="chargerFilter" class="form-control" style="width: auto; margin-left: 5px;" onchange="renderTable()">
-                    <option value="">🔌 Minden töltő</option>
-                    <option value="Gyari_tolto">Gyári töltő</option>
-                    <option value="Univerzalis_tolto">Univerzális töltő</option>
-                    <option value="Dokkolo_tolto">Dokkoló töltő</option>
-                    <option value="USB-C">USB-C</option>
-                    <option value="Micro-USB">Micro-USB</option>
-                    <option value="USB-A">USB-A</option>
-                    <option value="Lightning">Lightning</option>
-                    <option value="Wireless">Vezeték nélküli</option>
-                    <option value="12V_auto">12V autós</option>
-                    <option value="230V_halozati">230V hálózati</option>
-                </select>
-                
-                <button class="btn btn-primary" style="width: auto; margin-left: 5px;" onclick="toggleSort()">⇅ Rendezés</button>
-                <button class="btn btn-success" style="width: auto; margin-left: 5px;" onclick="showChargeRecommendation()">💡 Javaslat töltésre</button>
+                <div class="control-group">
+                    <button class="btn btn-primary action-button" onclick="toggleSort()">⇅ Rendezés</button>
+                    <button class="btn btn-success action-button" onclick="showChargeRecommendation()">💡 Javaslat töltésre</button>
+                </div>
                 
                 <input type="text" id="searchInput" class="search-box" placeholder="🔍 Keresés név, hely szerint..." />
             </div>
@@ -379,13 +413,13 @@
 
         <div id="batteriesContent" class="tab-content">
             <div class="controls">
-                <input type="file" id="batteryCSVInput" accept=".csv" style="margin-right: 10px;" />
+                <input type="file" id="batteryCSVInput" accept=".csv" />
                 <button class="btn btn-primary" onclick="loadBatteryCSV()">📁 Akku CSV</button>
                 <button class="btn btn-success" onclick="addBattery()">➕ Új Akku</button>
                 <button class="btn btn-warning" onclick="exportBatteryCSV()">💾 Akku Export</button>
                 <button class="btn btn-warning" onclick="showBatteryCSVText()">👁 Akku Szöveg</button>
                 
-                <select id="batteryTypeFilter" class="form-control" style="width: auto; margin-left: 10px;" onchange="renderBatteryTable()">
+                <select id="batteryTypeFilter" class="form-control" onchange="renderBatteryTable()">
                     <option value="">🔋 Minden típus</option>
                     <option value="Li-ion_18V">Li-ion 18V</option>
                     <option value="Li-ion_12V">Li-ion 12V</option>
@@ -394,7 +428,7 @@
                     <option value="Li-ion_18650">Li-ion 18650</option>
                 </select>
                 
-                <select id="qualityFilter" class="form-control" style="width: auto; margin-left: 5px;" onchange="renderBatteryTable()">
+                <select id="qualityFilter" class="form-control" onchange="renderBatteryTable()">
                     <option value="">⭐ Minden minősítés</option>
                     <option value="Kiváló">Kiváló</option>
                     <option value="Jó">Jó</option>
